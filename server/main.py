@@ -7,6 +7,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from dotenv import load_dotenv
 import os
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 
 #import secrets
@@ -18,6 +19,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.mount("/",StaticFiles(directory="client/build",html= True), name="static")
 
 #secret_key=secrets.token_hex(32)
 # Configure Session Middleware
@@ -41,11 +43,11 @@ async def login(request: Request, username: str = Form(...), password: str = For
     set_session_cookie(response, session_cookie_name="session")
     return response
 
-@app.get("/dashboard", response_class=HTMLResponse)
+@app.get("/dashboard")
 async def dashboard(request: Request):
-    login_required(request, session_cookie_name="session")
+    username = login_required(request, session_cookie_name="session")
     login_time = get_login_time_diff(request, session_cookie_name="session")
-    return templates.TemplateResponse("dashboard.html", {"request": request, "username": "test", "logged_in_time": login_time})
+    return {"username": username, "logged_in_time": str(login_time)}
 
 @app.get("/logout", response_class=HTMLResponse)
 async def logout(request: Request):
