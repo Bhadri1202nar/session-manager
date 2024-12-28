@@ -1,6 +1,9 @@
 import time
 from datetime import timedelta
 from fastapi import HTTPException,Response
+import secrets
+secret_key=secrets.token_hex(32)
+print(secret_key)
 def authenticate_user(username,password):
     if username=="test" and password =="test":
         return True

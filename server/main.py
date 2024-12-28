@@ -6,8 +6,19 @@ from  utils import authenticate_user, get_login_time_diff, set_session_cookie, u
 from starlette.middleware.sessions import SessionMiddleware
 from dotenv import load_dotenv
 import os
+from fastapi.middleware.cors import CORSMiddleware
+
+
 #import secrets
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # React frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 #secret_key=secrets.token_hex(32)
 # Configure Session Middleware
 load_dotenv()
